@@ -7,10 +7,10 @@
 #define HALFBLOCK "\xde"
 #endif // _WIN32
 
-#ifdef _linux_
+#ifdef linux
 #define FULLBLOCK "\u2588"
 #define HALFBLOCK "\u2590"
-#endif // _linux_
+#endif // linux
 
 char *repeatchar(char *, size_t);
 char *showprogress(size_t, size_t);
