@@ -1,0 +1,44 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+char *repeatchar(char *, size_t);
+char *showprogress(size_t, size_t);
+
+int main() {
+    char *progresscounter, *progressbar;
+    printf("\nRepeat characters 100 times\n");
+    for(size_t i = 0; i <= 100; i++) {
+        progresscounter = repeatchar("\xdb", i);
+        printf("\r|%s|\r", progresscounter);
+    }
+    free(progresscounter);
+    printf("\nShow Progress 0 - 200000\n");
+    for(size_t i = 0; i <= 200000; i++) {
+        progressbar = showprogress(i, 200000);
+        printf("\r%s\r", progressbar);
+    }
+    free(progressbar);
+    return 0;
+}
+
+char *repeatchar(char *str, size_t count) {
+    if (count == 0) return str;
+    char *repeat = calloc(strlen(str) * count + count, sizeof(size_t));
+    if (repeat == NULL) return "";
+    while (count--)
+        strcat(repeat, str);
+    return repeat;
+}
+
+char *showprogress(size_t progress, size_t total)
+{
+    char *current_cursor, *next_cursor, *result;
+    float percent = 100 * ((float)progress / (float)total);
+    current_cursor = repeatchar("\xdb", (size_t)percent);
+    next_cursor = repeatchar("\xde", 100 - (size_t)percent);
+    result = calloc(strlen(current_cursor) + strlen(next_cursor) + (size_t)percent + 1, sizeof(size_t));
+    if (percent == 100.00f) next_cursor = "";
+    sprintf(result, "|%s%s|%.2f%%", current_cursor, next_cursor, percent);
+    return result;
+}
