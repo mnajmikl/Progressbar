@@ -2,6 +2,16 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef _WIN32
+#define FULLBLOCK "\xdb"
+#define HALFBLOCK "\xde"
+#endif // _WIN32
+
+#ifdef _linux_
+#define FULLBLOCK "\u2588"
+#define HALFBLOCK "\u2590"
+#endif // _linux_
+
 char *repeatchar(char *, size_t);
 char *showprogress(size_t, size_t);
 
@@ -9,7 +19,7 @@ int main() {
     char *progresscounter, *progressbar;
     printf("\nRepeat characters 100 times\n");
     for(size_t i = 0; i <= 100; i++) {
-        progresscounter = repeatchar("\xdb", i);
+        progresscounter = repeatchar(FULLBLOCK, i);
         printf("\r|%s|\r", progresscounter);
     }
     free(progresscounter);
@@ -18,6 +28,8 @@ int main() {
         progressbar = showprogress(i, 200000);
         printf("\r%s\r", progressbar);
     }
+    printf("\r\n");
+    fflush(stdout);
     free(progressbar);
     return 0;
 }
@@ -35,10 +47,10 @@ char *showprogress(size_t progress, size_t total)
 {
     char *current_cursor, *next_cursor, *result;
     float percent = 100 * ((float)progress / (float)total);
-    current_cursor = repeatchar("\xdb", (size_t)percent);
-    next_cursor = repeatchar("\xde", 100 - (size_t)percent);
+    current_cursor = repeatchar(FULLBLOCK, (size_t)percent);
+    next_cursor = repeatchar(HALFBLOCK, 100 - (size_t)percent);
     result = calloc(strlen(current_cursor) + strlen(next_cursor) + (size_t)percent + 1, sizeof(size_t));
-    if (percent == 100.00f) next_cursor = "";
+    if ((int)percent == 100) next_cursor = "";
     sprintf(result, "|%s%s|%.2f%%", current_cursor, next_cursor, percent);
     return result;
 }
